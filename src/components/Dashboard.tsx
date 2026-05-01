@@ -3,6 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { TaskForm } from "@/components/TaskForm";
 import { TaskCard } from "@/components/TaskCard";
 import { AnalyticsChart } from "@/components/AnalyticsChart";
+import { ExportStats } from "@/components/ExportStats";
+import { ActiveTimer } from "@/components/ActiveTimer";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LogOut, Zap, ListTodo, BarChart3 } from "lucide-react";
