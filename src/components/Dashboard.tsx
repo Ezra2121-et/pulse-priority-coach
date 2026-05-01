@@ -3,6 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { TaskForm } from "@/components/TaskForm";
 import { TaskCard } from "@/components/TaskCard";
 import { AnalyticsChart } from "@/components/AnalyticsChart";
+import { ExportStats } from "@/components/ExportStats";
+import { ActiveTimer } from "@/components/ActiveTimer";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LogOut, Zap, ListTodo, BarChart3 } from "lucide-react";
@@ -60,6 +62,7 @@ export function Dashboard({ userId, userEmail, onSignOut }: DashboardProps) {
             <h1 className="text-xl font-bold text-gradient">FocusPulse</h1>
           </div>
           <div className="flex items-center gap-3">
+            <ActiveTimer userId={userId} />
             <span className="text-xs text-muted-foreground hidden sm:block">{userEmail}</span>
             <Button variant="ghost" size="sm" onClick={onSignOut}>
               <LogOut className="h-4 w-4" />
@@ -97,7 +100,10 @@ export function Dashboard({ userId, userEmail, onSignOut }: DashboardProps) {
                 Analytics
               </TabsTrigger>
             </TabsList>
-            <TaskForm userId={userId} onTaskCreated={loadTasks} />
+            <div className="flex items-center gap-2">
+              <ExportStats userId={userId} tasks={tasks} />
+              <TaskForm userId={userId} onTaskCreated={loadTasks} />
+            </div>
           </div>
 
           <TabsContent value="tasks" className="space-y-3">
