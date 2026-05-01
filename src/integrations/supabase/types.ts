@@ -14,7 +14,80 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      sessions: {
+        Row: {
+          created_at: string
+          ended_at: string | null
+          id: string
+          started_at: string
+          task_id: string
+          time_spent: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          started_at?: string
+          task_id: string
+          time_spent?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          started_at?: string
+          task_id?: string
+          time_spent?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sessions_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasks: {
+        Row: {
+          created_at: string
+          due_date: string
+          effort: number
+          id: string
+          name: string
+          status: string
+          updated_at: string
+          urgency: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          due_date: string
+          effort: number
+          id?: string
+          name: string
+          status?: string
+          updated_at?: string
+          urgency: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          due_date?: string
+          effort?: number
+          id?: string
+          name?: string
+          status?: string
+          updated_at?: string
+          urgency?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
