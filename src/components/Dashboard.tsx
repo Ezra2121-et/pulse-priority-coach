@@ -62,6 +62,7 @@ export function Dashboard({ userId, userEmail, onSignOut }: DashboardProps) {
             <h1 className="text-xl font-bold text-gradient">FocusPulse</h1>
           </div>
           <div className="flex items-center gap-3">
+            <ActiveTimer userId={userId} />
             <span className="text-xs text-muted-foreground hidden sm:block">{userEmail}</span>
             <Button variant="ghost" size="sm" onClick={onSignOut}>
               <LogOut className="h-4 w-4" />
