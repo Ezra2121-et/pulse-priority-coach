@@ -1,26 +1,41 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useAuth } from "@/hooks/use-auth";
+import { AuthForm } from "@/components/AuthForm";
+import { Dashboard } from "@/components/Dashboard";
+import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "FocusPulse — Personal Productivity Coach" },
+      { name: "description", content: "Prioritize tasks by dynamic Impact Score. Focus smarter, ship faster." },
+      { property: "og:title", content: "FocusPulse — Personal Productivity Coach" },
+      { property: "og:description", content: "Prioritize tasks by dynamic Impact Score. Focus smarter, ship faster." },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
-
 function Index() {
-  return <PlaceholderIndex />;
+  const { user, loading, signOut } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthForm />;
+  }
+
+  return (
+    <Dashboard
+      userId={user.id}
+      userEmail={user.email ?? ""}
+      onSignOut={signOut}
+    />
+  );
 }
