@@ -52,6 +52,80 @@ export type Database = {
           },
         ]
       }
+      subtasks: {
+        Row: {
+          completed: boolean
+          created_at: string
+          id: string
+          task_id: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          id?: string
+          task_id: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          id?: string
+          task_id?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subtasks_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      task_dependencies: {
+        Row: {
+          created_at: string
+          depends_on_task_id: string
+          id: string
+          task_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          depends_on_task_id: string
+          id?: string
+          task_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          depends_on_task_id?: string
+          id?: string
+          task_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_dependencies_depends_on_task_id_fkey"
+            columns: ["depends_on_task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_dependencies_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tasks: {
         Row: {
           created_at: string
@@ -60,6 +134,7 @@ export type Database = {
           id: string
           name: string
           status: string
+          tags: string[] | null
           updated_at: string
           urgency: number
           user_id: string
@@ -71,6 +146,7 @@ export type Database = {
           id?: string
           name: string
           status?: string
+          tags?: string[] | null
           updated_at?: string
           urgency: number
           user_id: string
@@ -82,8 +158,39 @@ export type Database = {
           id?: string
           name?: string
           status?: string
+          tags?: string[] | null
           updated_at?: string
           urgency?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_preferences: {
+        Row: {
+          break_duration: number
+          created_at: string
+          id: string
+          pomodoro_duration: number
+          theme: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          break_duration?: number
+          created_at?: string
+          id?: string
+          pomodoro_duration?: number
+          theme?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          break_duration?: number
+          created_at?: string
+          id?: string
+          pomodoro_duration?: number
+          theme?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
