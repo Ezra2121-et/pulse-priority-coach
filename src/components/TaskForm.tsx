@@ -7,18 +7,25 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import { Plus, Loader2 } from "lucide-react";
+import { TagInput } from "@/components/TaskTags";
 
 interface TaskFormProps {
   userId: string;
   onTaskCreated: () => void;
+  externalOpen?: boolean;
+  onExternalOpenChange?: (open: boolean) => void;
 }
 
-export function TaskForm({ userId, onTaskCreated }: TaskFormProps) {
-  const [open, setOpen] = useState(false);
+export function TaskForm({ userId, onTaskCreated, externalOpen, onExternalOpenChange }: TaskFormProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = externalOpen ?? internalOpen;
+  const setOpen = onExternalOpenChange ?? setInternalOpen;
+
   const [name, setName] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [urgency, setUrgency] = useState([3]);
   const [effort, setEffort] = useState([3]);
+  const [tags, setTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,6 +40,7 @@ export function TaskForm({ userId, onTaskCreated }: TaskFormProps) {
         due_date: new Date(dueDate).toISOString(),
         urgency: urgency[0],
         effort: effort[0],
+        tags,
       });
       if (error) throw error;
       toast.success("Task created!");
@@ -40,6 +48,7 @@ export function TaskForm({ userId, onTaskCreated }: TaskFormProps) {
       setDueDate("");
       setUrgency([3]);
       setEffort([3]);
+      setTags([]);
       setOpen(false);
       onTaskCreated();
     } catch (err: unknown) {
@@ -99,6 +108,10 @@ export function TaskForm({ userId, onTaskCreated }: TaskFormProps) {
               <span className="text-sm font-mono text-primary">{effort[0]}/5</span>
             </div>
             <Slider value={effort} onValueChange={setEffort} min={1} max={5} step={1} />
+          </div>
+          <div className="space-y-2">
+            <Label>Tags</Label>
+            <TagInput tags={tags} onChange={setTags} />
           </div>
           <div className="glass rounded-lg p-3 text-center">
             <p className="text-xs text-muted-foreground">Impact Score</p>

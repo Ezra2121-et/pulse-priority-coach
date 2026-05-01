@@ -3,20 +3,27 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Play, Square, CheckCircle2, Clock, Zap, AlertTriangle } from "lucide-react";
+import { Play, Square, CheckCircle2, Clock, Zap, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
 import { format, isPast } from "date-fns";
+import { Subtasks } from "@/components/Subtasks";
+import { TaskDependencies } from "@/components/TaskDependencies";
+import { TagBadge } from "@/components/TaskTags";
+import { useConfetti } from "@/components/Confetti";
 import type { Tables } from "@/integrations/supabase/types";
 
 interface TaskCardProps {
   task: Tables<"tasks">;
   onUpdate: () => void;
   userId: string;
+  allTasks: Tables<"tasks">[];
 }
 
-export function TaskCard({ task, onUpdate, userId }: TaskCardProps) {
+export function TaskCard({ task, onUpdate, userId, allTasks }: TaskCardProps) {
   const [focusing, setFocusing] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(false);
+  const fireConfetti = useConfetti();
 
   const isOverdue = isPast(new Date(task.due_date)) && task.status !== "completed";
   const priorityScore = (task.urgency * 3) + (task.effort * 1);
@@ -68,12 +75,13 @@ export function TaskCard({ task, onUpdate, userId }: TaskCardProps) {
     if (focusing) await stopFocus();
     try {
       await supabase.from("tasks").update({ status: "completed" }).eq("id", task.id);
-      toast.success("Task completed!");
+      fireConfetti();
+      toast.success("🎉 Task completed!");
       onUpdate();
     } catch {
       toast.error("Failed to complete task");
     }
-  }, [focusing, stopFocus, task.id, onUpdate]);
+  }, [focusing, stopFocus, task.id, onUpdate, fireConfetti]);
 
   return (
     <div
@@ -88,6 +96,11 @@ export function TaskCard({ task, onUpdate, userId }: TaskCardProps) {
             <h3 className={`font-semibold truncate ${task.status === "completed" ? "line-through text-muted-foreground" : ""}`}>
               {task.name}
             </h3>
+            {task.status !== "completed" && (
+              <button onClick={() => setExpanded(!expanded)} className="shrink-0">
+                {expanded ? <ChevronUp className="h-3 w-3 text-muted-foreground" /> : <ChevronDown className="h-3 w-3 text-muted-foreground" />}
+              </button>
+            )}
           </div>
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
@@ -99,6 +112,9 @@ export function TaskCard({ task, onUpdate, userId }: TaskCardProps) {
               Score: {priorityScore}
             </Badge>
             <Badge variant="outline" className="text-xs">U:{task.urgency} E:{task.effort}</Badge>
+            {task.tags && task.tags.map((tag) => (
+              <TagBadge key={tag} tag={tag} size="sm" />
+            ))}
           </div>
         </div>
 
@@ -128,6 +144,14 @@ export function TaskCard({ task, onUpdate, userId }: TaskCardProps) {
           )}
         </div>
       </div>
+
+      {/* Expandable details */}
+      {expanded && task.status !== "completed" && (
+        <div className="mt-3 pt-3 border-t border-glass-border space-y-3">
+          <Subtasks taskId={task.id} userId={userId} />
+          <TaskDependencies taskId={task.id} userId={userId} allTasks={allTasks} />
+        </div>
+      )}
     </div>
   );
 }
