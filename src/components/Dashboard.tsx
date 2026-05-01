@@ -100,7 +100,10 @@ export function Dashboard({ userId, userEmail, onSignOut }: DashboardProps) {
                 Analytics
               </TabsTrigger>
             </TabsList>
-            <TaskForm userId={userId} onTaskCreated={loadTasks} />
+            <div className="flex items-center gap-2">
+              <ExportStats userId={userId} tasks={tasks} />
+              <TaskForm userId={userId} onTaskCreated={loadTasks} />
+            </div>
           </div>
 
           <TabsContent value="tasks" className="space-y-3">
