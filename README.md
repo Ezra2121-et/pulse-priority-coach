@@ -1,4 +1,4 @@
-# Pulse Priority Coach
+# FocusPulse — Personal Productivity Coach
 
 A personal productivity dashboard for planning tasks, focusing with timed work sessions, and reviewing progress. Built with React and TypeScript using TanStack Start and Supabase.
 
